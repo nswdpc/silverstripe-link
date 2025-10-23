@@ -297,9 +297,8 @@ class Link extends DataObject
 
     /**
      * Validate
-     * @return ValidationResult
      */
-    public function validate()
+    public function validate(): \SilverStripe\Core\Validation\ValidationResult
     {
         $valid = true;
         $message = null;
@@ -795,9 +794,8 @@ class Link extends DataObject
 
     /**
      * Renders an HTML anchor attribute for this link
-     * @return \SilverStripe\ORM\FieldType\DBHTMLText
      */
-    public function forTemplate()
+    public function forTemplate(): string
     {
         $link = '';
         if ($this->LinkURL) {
