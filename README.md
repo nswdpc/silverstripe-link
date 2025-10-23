@@ -1,6 +1,6 @@
 # Note
 
-This is a fork of `gorriecoe/link`. Use at your own risk.
+This is a fork of `gorriecoe/silverstripe-link`. Use at your own risk.
 
 # Silverstripe link
 
