@@ -1,3 +1,7 @@
+# Note
+
+This is a fork of `gorriecoe/link`. Use at your own risk.
+
 # Silverstripe link
 
 Adds a Link Object that can be link to a URL, Email, Phone number, an internal Page or File.
