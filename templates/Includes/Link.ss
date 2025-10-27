@@ -1,4 +1,4 @@
-<% if LinkURL %>
+<% if $LinkURL %>
     <a{$IDAttr}{$ClassAttr} href="{$LinkURL}"{$TargetAttr}>
         {$Title}
     </a>
