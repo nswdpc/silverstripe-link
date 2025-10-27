@@ -27,7 +27,7 @@ class DefineableMarkupID extends Extension
     /**
      * Update Fields
      */
-    public function updateCMSFields(FieldList $fields): FieldList
+    public function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldToTab(
             'Root.Main',
@@ -37,7 +37,6 @@ class DefineableMarkupID extends Extension
             )
             ->setDescription(_t(self::class . '.IDCUSTOMVALUE', 'Define an ID for the link.  This is particularly useful for google tracking.'))
         );
-        return $fields;
     }
 
     /**
