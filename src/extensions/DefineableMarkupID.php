@@ -46,7 +46,7 @@ class DefineableMarkupID extends Extension
     public function onBeforeWrite()
     {
         $owner = $this->getOwner();
-        if($owner instanceof Link) {
+        if ($owner instanceof Link) {
             $owner->IDCustomValue = Convert::raw2url($owner->IDCustomValue ?? '');
         }
     }

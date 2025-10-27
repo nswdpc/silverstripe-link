@@ -63,7 +63,7 @@ class LinkSiteTree extends Extension
     {
         $owner = $this->getOwner();
         if (class_exists(SiteTree::class) && ($owner instanceof Link)) {
-            
+
             $sitetree_field_label = Config::inst()->get($owner::class, 'sitetree_field_label') ?: 'MenuTitle';
 
             // Insert site tree field after the file selection field
@@ -102,7 +102,7 @@ class LinkSiteTree extends Extension
             $owner->Type == 'SiteTree'
         ) {
             $currentPage = $owner->getCurrentPage();
-            if($currentPage instanceof SiteTree) {
+            if ($currentPage instanceof SiteTree) {
                 $status = $currentPage === $owner->SiteTree() || $currentPage->ID === $owner->SiteTreeID;
             }
         }
@@ -117,7 +117,7 @@ class LinkSiteTree extends Extension
             $owner->Type == 'SiteTree'
         ) {
             $currentPage = $owner->getCurrentPage();
-            if($currentPage instanceof SiteTree) {
+            if ($currentPage instanceof SiteTree) {
                 $status = $owner->isCurrent() || in_array($owner->SiteTreeID, $currentPage->getAncestors()->column());
             }
         }
@@ -132,7 +132,7 @@ class LinkSiteTree extends Extension
             $owner->Type == 'SiteTree'
         ) {
             $currentPage = $owner->getCurrentPage();
-            if($currentPage instanceof SiteTree) {
+            if ($currentPage instanceof SiteTree) {
                 // Always false for root pages
                 if (empty($owner->SiteTree()->ParentID)) {
                     $status = false;
