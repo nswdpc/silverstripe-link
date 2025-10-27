@@ -114,16 +114,6 @@ class Link extends DataObject
     private static $allowed_types;
 
     /**
-     * Ensures that the methods are wrapped in the correct type and
-     * values are safely escaped while rendering in the template.
-     */
-    private static array $casting = [
-        'ClassAttr' => 'HTMLFragment',
-        'TargetAttr' => 'HTMLFragment',
-        'IDAttr' => 'HTMLFragment'
-    ];
-
-    /**
      * @config
      */
     private static string $linking_mode_default = 'link';
@@ -663,7 +653,7 @@ class Link extends DataObject
     {
         $idValue = trim($this->getIDValue() ?? '');
         if ($idValue !== '') {
-            return ' id="' . $idValue . '"';
+            return ' id="' . Convert::raw2htmlatt($idValue) . '"';
         } else {
             return '';
         }
