@@ -4,7 +4,6 @@ namespace gorriecoe\Link\View;
 
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
-use libphonenumber\PhoneNumber;
 use SilverStripe\Model\ModelData;
 
 /**
@@ -12,7 +11,6 @@ use SilverStripe\Model\ModelData;
  */
 class Phone extends ModelData
 {
-    
     protected \libphonenumber\PhoneNumberUtil $library;
 
     protected \libphonenumber\PhoneNumber $instance;

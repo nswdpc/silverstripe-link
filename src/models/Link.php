@@ -3,7 +3,6 @@
 namespace gorriecoe\Link\Models;
 
 use gorriecoe\Link\Extensions\LinkSiteTree;
-use gorriecoe\Link\Extensions\SiteTreeLink;
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
 use SilverStripe\CMS\Model\SiteTree;
@@ -65,9 +64,9 @@ class Link extends DataObject
     private static array $has_one = [
         'File' => File::class
     ];
-    
+
     private static array $owns = [
-       'File',   
+        'File',
     ];
 
     /**
@@ -261,7 +260,7 @@ class Link extends DataObject
             ->displayIf('Type')->isEqualTo('Phone')->end(),
             CheckboxField::create(
                 'OpenInNewWindow',
-                _t(self::class . '.OPENINNEWWINDOW','Open link in a new window')
+                _t(self::class . '.OPENINNEWWINDOW', 'Open link in a new window')
             )
             ->displayIf('Type')->isEqualTo('URL')
             ->orIf()->isEqualTo('File')
@@ -270,7 +269,7 @@ class Link extends DataObject
 
         // Disable folders in dropdown if linking to folders is not allowed.
         if (!$this->config()->get('link_to_folders')) {
-            $fileDropdown->setDisableFunction(fn($item): bool => is_a($item, Folder::class));
+            $fileDropdown->setDisableFunction(fn ($item): bool => is_a($item, Folder::class));
         }
 
         $this->extend('updateCMSMainFields', $fields);
@@ -385,9 +384,9 @@ class Link extends DataObject
                     $this->Title = $this->getField($type);
                     break;
                 case 'SiteTree':
-                    if(class_exists(SiteTree::class) && $this->hasMethod('SiteTree')) {
+                    if (class_exists(SiteTree::class) && $this->hasMethod('SiteTree')) {
                         $siteTree = $this->SiteTree();
-                        if($siteTree instanceof SiteTree) {
+                        if ($siteTree instanceof SiteTree) {
                             $this->Title = $siteTree->MenuTitle;
                         }
                     }
@@ -494,7 +493,7 @@ class Link extends DataObject
         }
 
         if ($allowed_types) {
-           foreach ($allowed_types as $type) {
+            foreach ($allowed_types as $type) {
                 if (!array_key_exists($type, $types)) {
                     user_error("{$type} is not a valid link type");
                 }
@@ -625,7 +624,7 @@ class Link extends DataObject
     public function getClassAttr(): string
     {
         $class = trim($this->getClass());
-        if($class !== '') {
+        if ($class !== '') {
             return ' class="' . Convert::raw2htmlatt($class) . '"';
         } else {
             return '';
@@ -664,7 +663,7 @@ class Link extends DataObject
     public function getIDAttr(): string
     {
         $idValue = trim($this->getIDValue() ?? '');
-        if($idValue !== '') {
+        if ($idValue !== '') {
             return ' id="' . $idValue . '"';
         } else {
             return '';

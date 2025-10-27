@@ -10,7 +10,7 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Core\Extension;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
 
-if(!class_exists(SiteTree::class)) {
+if (!class_exists(SiteTree::class)) {
     return;
 }
 
@@ -60,10 +60,10 @@ class LinkSiteTree extends Extension
      */
     public function updateCMSFields(FieldList $fields)
     {
-        if(class_exists(SiteTree::class)) {
+        if (class_exists(SiteTree::class)) {
             $owner = $this->getOwner();
             $config = $owner->config();
-            $sitetree_field_label = $config->get('sitetree_field_label') ? : 'MenuTitle';
+            $sitetree_field_label = $config->get('sitetree_field_label') ?: 'MenuTitle';
 
             // Insert site tree field after the file selection field
             $fields->insertAfter(

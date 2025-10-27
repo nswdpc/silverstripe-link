@@ -20,7 +20,7 @@ class SiteTreeLink extends Extension
     {
         $owner = $this->getOwner();
         //loop through has_one relationships and reset any Link fields
-        if($hasOne = $owner->Config()->get('has_one')){
+        if ($hasOne = $owner->Config()->get('has_one')) {
             foreach ($hasOne as $field => $fieldType) {
                 if ($fieldType === Link::class) {
                     $owner->{$field.'ID'} = 0;
