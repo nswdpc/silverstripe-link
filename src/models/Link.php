@@ -295,7 +295,7 @@ class Link extends DataObject
                 if ($this->{$type} == '') {
                     $valid = false;
                     $message = _t(
-                        self::class . '.VALIDATIONERROR_EMPTY'.strtoupper($type),
+                        self::class . '.VALIDATIONERROR_EMPTY'.strtoupper((string) $type),
                         'You must enter a {TypeLabel}',
                         [
                             'TypeLabel' => $this->TypeLabel
@@ -325,7 +325,7 @@ class Link extends DataObject
             switch ($type) {
                 case 'URL':
                     $allowedFirst = ['#', '/'];
-                    if (!in_array(substr($this->URL, 0, 1), $allowedFirst) && !filter_var($this->URL, FILTER_VALIDATE_URL)) {
+                    if (!in_array(substr((string) $this->URL, 0, 1), $allowedFirst) && !filter_var($this->URL, FILTER_VALIDATE_URL)) {
                         $valid = false;
                         $message = _t(
                             self::class . '.VALIDATIONERROR_VALIDURL',
@@ -345,7 +345,7 @@ class Link extends DataObject
 
                     break;
                 case 'Phone':
-                    if (!preg_match("/^\+?[0-9a-zA-Z\-\s]*[\,\#]?[0-9\-\s]*$/", $this->Phone)) {
+                    if (!preg_match("/^\+?[0-9a-zA-Z\-\s]*[\,\#]?[0-9\-\s]*$/", (string) $this->Phone)) {
                         $valid = false;
                         $message = _t(
                             self::class . '.VALIDATIONERROR_VALIDPHONE',
@@ -442,9 +442,8 @@ class Link extends DataObject
     /**
      * This is an alias to {@link addExtraClass()}
      * @param string $class CSS classes.
-     * @return Link
      */
-    public function setClass($class)
+    public function setClass($class): static
     {
         return $this->addExtraClass($class);
     }
@@ -780,7 +779,7 @@ class Link extends DataObject
     public function getTypeLabel()
     {
         $types = $this->config()->get('types');
-        return isset($types[$this->Type]) ? _t(self::class . '.TYPE' . strtoupper($this->Type), $types[$this->Type]) : null;
+        return isset($types[$this->Type]) ? _t(self::class . '.TYPE' . strtoupper((string) $this->Type), $types[$this->Type]) : null;
     }
 
     /**
