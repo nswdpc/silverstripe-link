@@ -135,17 +135,6 @@ class Link extends DataObject
     private static bool $link_to_folders = false;
 
     /**
-     * Provides a quick way to define additional methods for provideGraphQLScaffolding as Fields
-     * @return Array
-     */
-    private static array $gql_fields = [];
-
-    /**
-     * Provides a quick way to define additional methods for provideGraphQLScaffolding as Nested Queries
-     */
-    private static array $gql_nested_queries = [];
-
-    /**
      * Custom CSS classes for template
      */
     protected array $classes = [];
@@ -392,27 +381,6 @@ class Link extends DataObject
                     break;
             }
         }
-    }
-
-    /**
-     * Provides a quick way to define additional methods to provideGraphQLScaffolding as Fields
-     */
-    public function gqlFields(): array
-    {
-        $fields = $this->config()->get('gql_fields');
-        $this->extend('updateGqlFields', $fields);
-        return array_merge(['LinkURL'], $fields);
-    }
-
-    /**
-     * Provides a quick way to define additional methods to provideGraphQLScaffolding as Nested Queries
-     * @return Array
-     */
-    public function gqlNestedQueries()
-    {
-        $nested = $this->config()->get('gql_nested_queries');
-        $this->extend('updateGqlNestedQueries', $nested);
-        return $nested;
     }
 
     /**
