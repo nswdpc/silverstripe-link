@@ -15,6 +15,8 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Control\Director;
@@ -589,6 +591,14 @@ class Link extends DataObject
     }
 
     /**
+     * Returns the html class attribute for the template variable $ClassAttr
+     */
+    public function ClassAttr(): DBHTMLText
+    {
+        return DBField::create_field('HTMLFragment', $this->getClassAttr());
+    }
+
+    /**
      * Returns the html target attribute
      */
     public function getTarget(): string
@@ -602,6 +612,14 @@ class Link extends DataObject
     public function getTargetAttr(): string
     {
         return $this->OpenInNewWindow ? ' target="_blank" rel="noopener"' : '';
+    }
+
+    /**
+     * Returns the html target attribute for the template variable $TargetAttr
+     */
+    public function TargetAttr(): DBHTMLText
+    {
+        return DBField::create_field('HTMLFragment', $this->getTargetAttr());
     }
 
     /**
@@ -625,6 +643,14 @@ class Link extends DataObject
         } else {
             return '';
         }
+    }
+
+    /**
+     * Returns the html id attribute for the template variable $IDAttr
+     */
+    public function IDAttr(): DBHTMLText
+    {
+        return DBField::create_field('HTMLFragment', $this->getIDAttr());
     }
 
     /**
