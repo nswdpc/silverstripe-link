@@ -2,6 +2,7 @@
 
 namespace gorriecoe\Link\Extensions;
 
+use gorriecoe\Link\Models\Link;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Core\Extension;
@@ -45,16 +46,18 @@ class DefineableMarkupID extends Extension
     public function onBeforeWrite()
     {
         $owner = $this->getOwner();
-        $owner->IDCustomValue = Convert::raw2url($owner->IDCustomValue);
+        if($owner instanceof Link) {
+            $owner->IDCustomValue = Convert::raw2url($owner->IDCustomValue ?? '');
+        }
     }
 
     /**
      * Renders an HTML ID attribute for this link
      */
-    public function updateIDValue(&$id)
+    public function updateIDValue(&$id): void
     {
         $owner = $this->getOwner();
-        if ($owner->IDCustomValue) {
+        if (($owner instanceof Link) && $owner->IDCustomValue) {
             $id = $owner->IDCustomValue;
         }
     }

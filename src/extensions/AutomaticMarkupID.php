@@ -2,6 +2,7 @@
 
 namespace gorriecoe\Link\Extensions;
 
+use gorriecoe\Link\Models\Link;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extension;
 
@@ -19,8 +20,8 @@ class AutomaticMarkupID extends Extension
     public function updateIDValue(&$id)
     {
         $owner = $this->getOwner();
-        if ($owner->Title) {
-            $id = Convert::raw2url($owner->Title);
+        if (($owner instanceof Link) && $owner->Title) {
+            $id = Convert::raw2url($owner->Title ?? '');
         }
     }
 }

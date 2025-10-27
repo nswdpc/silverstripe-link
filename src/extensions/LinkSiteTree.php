@@ -4,6 +4,7 @@ namespace gorriecoe\Link\Extensions;
 
 use gorriecoe\Link\Models\Link;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\TextField;
@@ -51,7 +52,7 @@ class LinkSiteTree extends Extension
 
     /**
      * Defines the label used in the sitetree dropdown.
-     * @param String $sitetree_field_label
+     * @param string $sitetree_field_label
      */
     private static string $sitetree_field_label = 'MenuTitle';
 
@@ -60,10 +61,10 @@ class LinkSiteTree extends Extension
      */
     public function updateCMSFields(FieldList $fields)
     {
-        if (class_exists(SiteTree::class)) {
-            $owner = $this->getOwner();
-            $config = $owner->config();
-            $sitetree_field_label = $config->get('sitetree_field_label') ?: 'MenuTitle';
+        $owner = $this->getOwner();
+        if (class_exists(SiteTree::class) && ($owner instanceof Link)) {
+            
+            $sitetree_field_label = Config::inst()->get($owner::class, 'sitetree_field_label') ?: 'MenuTitle';
 
             // Insert site tree field after the file selection field
             $fields->insertAfter(
@@ -85,7 +86,8 @@ class LinkSiteTree extends Extension
             );
 
             // Display warning if the selected page is deleted or unpublished
-            if ($owner->SiteTreeID && !$owner->SiteTree()->isPublished()) {
+            $siteTree = $owner->SiteTree();
+            if ($siteTree->isInDB() && !$siteTree->isPublished()) {
                 $sitetreeField->setDescription(_t(self::class . '.DELETEDWARNING', 'Warning: The selected page appears to have been deleted or unpublished. This link may not appear or may be broken in the frontend'));
             }
         }
@@ -96,12 +98,13 @@ class LinkSiteTree extends Extension
         $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
-            $owner->Type == 'SiteTree' &&
-            isset($owner->SiteTreeID) &&
-            ($owner->CurrentPage instanceof SiteTree)
+            ($owner instanceof Link) &&
+            $owner->Type == 'SiteTree'
         ) {
-            $currentPage = $owner->CurrentPage;
-            $status = $currentPage === $owner->SiteTree() || $currentPage->ID === $owner->SiteTreeID;
+            $currentPage = $owner->getCurrentPage();
+            if($currentPage instanceof SiteTree) {
+                $status = $currentPage === $owner->SiteTree() || $currentPage->ID === $owner->SiteTreeID;
+            }
         }
     }
 
@@ -110,12 +113,13 @@ class LinkSiteTree extends Extension
         $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
-            $owner->Type == 'SiteTree' &&
-            isset($owner->SiteTreeID) &&
-            ($owner->CurrentPage instanceof SiteTree)
+            ($owner instanceof Link) &&
+            $owner->Type == 'SiteTree'
         ) {
-            $currentPage = $owner->CurrentPage;
-            $status = $owner->isCurrent() || in_array($owner->SiteTreeID, $currentPage->getAncestors()->column());
+            $currentPage = $owner->getCurrentPage();
+            if($currentPage instanceof SiteTree) {
+                $status = $owner->isCurrent() || in_array($owner->SiteTreeID, $currentPage->getAncestors()->column());
+            }
         }
     }
 
@@ -124,18 +128,19 @@ class LinkSiteTree extends Extension
         $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
-            $owner->Type == 'SiteTree' &&
-            isset($owner->SiteTreeID) &&
-            ($owner->CurrentPage instanceof SiteTree)
+            ($owner instanceof Link) &&
+            $owner->Type == 'SiteTree'
         ) {
-            $currentPage = $owner->CurrentPage;
-            // Always false for root pages
-            if (empty($owner->SiteTree()->ParentID)) {
-                $status = false;
-            } else {
-                // Parent must exist and not be an orphan itself
-                $parent = $owner->Parent();
-                $status = !$parent || !$parent->exists() || $parent->isOrphaned();
+            $currentPage = $owner->getCurrentPage();
+            if($currentPage instanceof SiteTree) {
+                // Always false for root pages
+                if (empty($owner->SiteTree()->ParentID)) {
+                    $status = false;
+                } else {
+                    // Parent must exist and not be an orphan itself
+                    $parent = $owner->Parent();
+                    $status = !$parent || !$parent->exists() || $parent->isOrphaned();
+                }
             }
         }
     }

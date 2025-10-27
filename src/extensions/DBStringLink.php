@@ -19,7 +19,7 @@ class DBStringLink extends Extension
      */
     public function LinkFriendly(): string
     {
-        return Convert::raw2url($this->getOwner()->value);
+        return Convert::raw2url($this->getOwner()->value ?? '');
     }
 
     /**
