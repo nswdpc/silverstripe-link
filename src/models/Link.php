@@ -2,6 +2,7 @@
 
 namespace gorriecoe\Link\Models;
 
+use gorriecoe\Link\View\Phone;
 use gorriecoe\Link\Extensions\LinkSiteTree;
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
@@ -409,7 +410,8 @@ class Link extends DataObject
     }
 
     /**
-     * Set style used for
+     * Set style class used in the class attribute.
+     * This is not used as an inline style attribute.
      * @param string $style
      */
     public function setStyle($style): static
@@ -507,6 +509,16 @@ class Link extends DataObject
         return $i18nStyles;
     }
 
+    public function getFormattedPhoneLink(): string
+    {
+        $phone = $this->obj('Phone')->PhoneFriendly();
+        if($phone instanceof Phone) {
+            return $phone->RFC3966()->forTemplate();
+        } else {
+            return '';
+        }
+    }
+
     /**
      * Works out what the URL for this link should be based on it's Type
      */
@@ -525,7 +537,7 @@ class Link extends DataObject
                 $LinkURL = $this->Email ? 'mailto:' . $this->Email : null;
                 break;
             case 'Phone':
-                $LinkURL = $this->obj('Phone')->PhoneFriendly()->RFC3966();
+                $LinkURL = $this->getFormattedPhoneLink();
                 break;
             case 'File':
             case 'SiteTree':
@@ -784,7 +796,7 @@ class Link extends DataObject
     {
         $link = '';
         if ($this->LinkURL) {
-            $link = $this->renderWith($this->RenderTemplates);
+            $link = $this->renderWith($this->getRenderTemplates());
         }
 
         $this->extend('updateTemplate', $link);

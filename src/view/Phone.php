@@ -20,7 +20,7 @@ class Phone extends ModelData
     /**
      * The country the user is dialing from.
      */
-    protected string $fromCountry;
+    protected string $fromCountry = '';
 
     private static string $default_country = 'NZ';
 

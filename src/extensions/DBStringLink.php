@@ -33,13 +33,13 @@ class DBStringLink extends Extension
     /**
      * Provides string replace to allow phone number friendly urls
      */
-    public function PhoneFriendly(): string
+    public function PhoneFriendly(): ?Phone
     {
         $value = $this->getOwner()->value;
         if ($value) {
             return Phone::create($value);
         } else {
-            return '';
+            return null;
         }
     }
 }
