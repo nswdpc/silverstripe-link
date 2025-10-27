@@ -8,50 +8,36 @@ use libphonenumber\PhoneNumber;
 use SilverStripe\Model\ModelData;
 
 /**
- * Phone
- *
  * @package silverstripe-link
  */
 class Phone extends ModelData
 {
-    /**
-     * @var \libphonenumber\PhoneNumberUtil
-     */
-    protected $library;
+    
+    protected \libphonenumber\PhoneNumberUtil $library;
 
-    /**
-     * @var \libphonenumber\PhoneNumber
-     */
-    protected $instance;
+    protected \libphonenumber\PhoneNumber $instance;
 
-    /**
-     * @var int
-     */
     protected $phoneNumberFormat = PhoneNumberFormat::E164;
 
     /**
      * The country the user is dialing from.
-     *
-     * @var string
      */
-    protected $fromCountry;
+    protected string $fromCountry;
 
-    private static $default_country = 'NZ';
+    private static string $default_country = 'NZ';
 
     public function __construct($phone)
     {
         $this->library = PhoneNumberUtil::getInstance();
         $country = $this->config()->get('default_country');
         $this->instance = $this->library->parse($phone, $country);
-        parent::__construct($phone);
+        parent::__construct();
     }
 
     /**
      * Format the phone number in international format.
-     *
-     * @return gorriecoe\Link\View\Phone
      */
-    public function International()
+    public function International(): self
     {
         $this->phoneNumberFormat = PhoneNumberFormat::INTERNATIONAL;
         return $this;
@@ -59,10 +45,8 @@ class Phone extends ModelData
 
     /**
      * Format the phone number in national format.
-     *
-     * @return gorriecoe\Link\View\Phone
      */
-    public function National()
+    public function National(): self
     {
         $this->phoneNumberFormat = PhoneNumberFormat::NATIONAL;
         return $this;
@@ -70,10 +54,8 @@ class Phone extends ModelData
 
     /**
      * Format the phone number in E164 format
-     *
-     * @return gorriecoe\Link\View\Phone.
      */
-    public function E164()
+    public function E164(): self
     {
         $this->phoneNumberFormat = PhoneNumberFormat::E164;
         return $this;
@@ -81,10 +63,8 @@ class Phone extends ModelData
 
     /**
      * Format the phone number in RFC3966 format.
-     *
-     * @return gorriecoe\Link\View\Phone
      */
-    public function RFC3966()
+    public function RFC3966(): self
     {
         $this->phoneNumberFormat = PhoneNumberFormat::RFC3966;
         return $this;
@@ -92,11 +72,8 @@ class Phone extends ModelData
 
     /**
      * Set the country to which the phone number belongs to.
-     *
-     * @param string $country
-     * @return gorriecoe\Link\View\Phone
      */
-    public function To($country)
+    public function To(string $country): self
     {
         $country = $this->library->getMetadataForRegion($country);
         $this->instance->setCountryCode($country->getCountryCode());
@@ -105,11 +82,8 @@ class Phone extends ModelData
 
     /**
      * Set the country the user is dialing from.
-     *
-     * @param string $country
-     * @return gorriecoe\Link\View\Phone
      */
-    public function From($country)
+    public function From(string $country): self
     {
         $this->fromCountry = $country;
         return $this;
@@ -119,9 +93,8 @@ class Phone extends ModelData
      * Sets whether this phone number uses a leading zero.
      *
      * @param bool $value True to use italian leading zero, false otherwise.
-     * @return gorriecoe\Link\View\Phone
      */
-    public function LeadingZero($value = true)
+    public function LeadingZero(bool $value = true): self
     {
         $this->instance->setItalianLeadingZero($value);
         return $this;

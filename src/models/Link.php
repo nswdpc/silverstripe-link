@@ -6,6 +6,7 @@ use gorriecoe\Link\Extensions\LinkSiteTree;
 use gorriecoe\Link\Extensions\SiteTreeLink;
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\DropdownField;
@@ -15,7 +16,8 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Control\Director;
 use SilverStripe\CMS\Controllers\ContentController;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
@@ -24,17 +26,16 @@ use SilverStripe\Assets\Folder;
 /**
  * Link
  *
- * @package silverstripe
- * @subpackage silverstripe-link
+ * @package silverstripe-link
  *
- * @property string Title
- * @property string Type
- * @property string URL
- * @property string Email
- * @property string Phone
- * @property bool OpenInNewWindow
- * @property string SelectedStyle
- * @property int FileID
+ * @property string $Title
+ * @property string $Type
+ * @property string $URL
+ * @property string $Email
+ * @property string $Phone
+ * @property bool $OpenInNewWindow
+ * @property string $SelectedStyle
+ * @property int $FileID
  * @method File File()
  * @mixin LinkSiteTree
  */
@@ -171,9 +172,9 @@ class Link extends DataObject
     private static $gql_nested_queries = [];
 
     /**
-     * @var string custom CSS classes for template
+     * Custom CSS classes for template
      */
-    protected $classes = [];
+    protected array $classes = [];
 
     /**
      * @var string custom style for template typically defined by the template.
@@ -298,7 +299,7 @@ class Link extends DataObject
     /**
      * Validate
      */
-    public function validate(): \SilverStripe\Core\Validation\ValidationResult
+    public function validate(): ValidationResult
     {
         $valid = true;
         $message = null;
@@ -322,7 +323,7 @@ class Link extends DataObject
                 break;
             case 'File':
             case 'SiteTree':
-                if ($type && empty($this->{$type.'ID'})) {
+                if (empty($this->{$type.'ID'})) {
                     $valid = false;
                     $message = _t(
                         __CLASS__ . '.VALIDATIONERROR_OBJECT',
@@ -394,7 +395,12 @@ class Link extends DataObject
                     $this->Title = $this->getField($type);
                     break;
                 case 'SiteTree':
-                    $this->Title = $this->SiteTree()->MenuTitle;
+                    if(class_exists(SiteTree::class) && $this->hasMethod('SiteTree')) {
+                        $siteTree = $this->SiteTree();
+                        if($siteTree instanceof SiteTree) {
+                            $this->Title = $siteTree->MenuTitle;
+                        }
+                    }
                     break;
                 default:
                     if ($this->getRelationType($type) == 'has_one' && $component = $this->getComponent($type)) {
@@ -467,10 +473,8 @@ class Link extends DataObject
 
     /**
      * Get style defined by the template or admin
-     * @param string $style
-     * @return Link
      */
-    public function getStyle()
+    public function getStyle(): ?string
     {
         return $this->SelectedStyle ? $this->SelectedStyle : $this->template_style;
     }
@@ -557,12 +561,11 @@ class Link extends DataObject
 
     /**
      * Works out what the URL for this link should be based on it's Type
-     * @return string
      */
-    public function getLinkURL()
+    public function getLinkURL(): ?string
     {
         if (!$this->ID) {
-            return;
+            return null;
         }
         $type = $this->Type;
         switch ($type) {
@@ -579,7 +582,7 @@ class Link extends DataObject
             case 'SiteTree':
                 if ($component = $this->getComponent($type)) {
                     if (!$component->exists()) {
-                        $LinkURL = false;
+                        $LinkURL = null;
                     }
                     if ($component->hasMethod('Link')) {
                         $LinkURL = $component->Link() . $this->Anchor;
@@ -595,7 +598,7 @@ class Link extends DataObject
                 }
                 break;
             default:
-                $LinkURL = false;
+                $LinkURL = null;
                 break;
         }
 
@@ -605,9 +608,8 @@ class Link extends DataObject
 
     /**
      * Returns the css classes
-     * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         if ($this->SelectedStyle) {
             $this->setClass($this->SelectedStyle);
@@ -625,59 +627,63 @@ class Link extends DataObject
 
     /**
      * Returns the html class attribute
-     * @return HTMLFragment
      */
-    public function getClassAttr()
+    public function getClassAttr(): string
     {
-        return $this->Class ? " class='$this->Class'" : null;
+        $class = trim($this->getClass());
+        if($class !== '') {
+            return ' class="' . Convert::raw2htmlatt($class) . '"';
+        } else {
+            return '';
+        }
     }
 
     /**
      * Returns the html target attribute
-     * @return string
      */
     public function getTarget()
     {
-        return $this->OpenInNewWindow ? "_blank" : null;
+        return $this->OpenInNewWindow ? "_blank" : '';
     }
 
     /**
      * Returns the html target attribute
-     * @return HTMLFragment
      */
-    public function getTargetAttr()
+    public function getTargetAttr(): string
     {
-        return $this->OpenInNewWindow ? " target='_blank' rel='noopener'" : null;
+        return $this->OpenInNewWindow ? ' target="_blank" rel="noopener"' : '';
     }
 
     /**
      * Returns the html id attribute
-     * @return string
      */
-    public function getIDValue()
+    public function getIDValue(): ?string
     {
-        $id = null;
+        $id = '';
         $this->extend('updateIDValue', $id);
         return $id;
     }
 
     /**
      * Renders an HTML ID attribute
-     * @return HTMLFragment
      */
-    public function getIDAttr()
+    public function getIDAttr(): string
     {
-        return $this->IDValue ? " id='$this->IDValue'" : null;
+        $idValue = trim($this->getIDValue() ?? '');
+        if($idValue !== '') {
+            return ' id="' . $idValue . '"';
+        } else {
+            return '';
+        }
     }
 
     /**
      * Returns the current page scope
-     * @return Controller
      */
     public function getCurrentPage()
     {
         $currentPage = Director::get_current_page();
-        if ($currentPage instanceof ContentController) {
+        if (class_exists(SiteTree::class) && class_exists(ContentController::class) && ($currentPage instanceof ContentController)) {
             $currentPage = $currentPage->data();
         }
         return $currentPage;
@@ -731,6 +737,7 @@ class Link extends DataObject
     {
         $isCurrent = null;
         $this->extend('updateLinkOrCurrent', $isCurrent);
+        // @phpstan-ignore if.alwaysFalse
         if ($isCurrent) {
             return $this->config()->get('linking_mode_current');
         } else {
@@ -747,6 +754,7 @@ class Link extends DataObject
     {
         $isSection = null;
         $this->extend('updateLinkOrSection', $isSection);
+        // @phpstan-ignore if.alwaysFalse
         if ($isSection) {
             return $this->config()->get('linking_mode_section');
         } else {

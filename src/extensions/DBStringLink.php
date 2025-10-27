@@ -15,31 +15,30 @@ class DBStringLink extends Extension
 {
     /**
      * Provides string replace to allow link friendly urls
-     * @return string
      */
-    public function LinkFriendly()
+    public function LinkFriendly(): string
     {
         return Convert::raw2url($this->owner->value);
     }
 
     /**
      * @alias LinkFriendly
-     * @return string
      */
-    public function URLFriendly()
+    public function URLFriendly(): string
     {
-        return $this->LinkFriendly($this->owner->value);
+        return $this->LinkFriendly();
     }
 
     /**
      * Provides string replace to allow phone number friendly urls
-     * @return string
      */
-    public function PhoneFriendly()
+    public function PhoneFriendly(): string
     {
         $value = $this->owner->value;
         if ($value) {
             return Phone::create($value);
+        } else {
+            return '';
         }
     }
 }
