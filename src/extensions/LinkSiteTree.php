@@ -20,22 +20,23 @@ if(!class_exists(SiteTree::class)) {
  * @package silverstripe-link
  *
  * @property int $SiteTreeID
+ * @property ?string $Anchor
+ * @method mixed SiteTree()
+ * @extends \SilverStripe\Core\Extension<static>
  */
 class LinkSiteTree extends Extension
 {
     /**
      * Database fields
-     * @var array
      */
-    private static $db = [
+    private static array $db = [
         'Anchor' => 'Varchar(255)',
     ];
 
     /**
      * Has_one relationship
-     * @var array
      */
-    private static $has_one = [
+    private static array $has_one = [
         // @phpstan-ignore class.notFound
         'SiteTree' => SiteTree::class,
     ];
@@ -43,10 +44,8 @@ class LinkSiteTree extends Extension
     /**
      * A map of object types that can be linked to
      * Custom dataobjects can be added to this
-     *
-     * @var array
      **/
-    private static $types = [
+    private static array $types = [
         'SiteTree' => 'Page on this website',
     ];
 
@@ -54,16 +53,15 @@ class LinkSiteTree extends Extension
      * Defines the label used in the sitetree dropdown.
      * @param String $sitetree_field_label
      */
-    private static $sitetree_field_label = 'MenuTitle';
+    private static string $sitetree_field_label = 'MenuTitle';
 
     /**
      * Update Fields
-     * @param FieldList $fields
      */
     public function updateCMSFields(FieldList $fields)
     {
         if(class_exists(SiteTree::class)) {
-            $owner = $this->owner;
+            $owner = $this->getOwner();
             $config = $owner->config();
             $sitetree_field_label = $config->get('sitetree_field_label') ? : 'MenuTitle';
 
@@ -73,29 +71,29 @@ class LinkSiteTree extends Extension
                 Wrapper::create(
                     $sitetreeField = TreeDropdownField::create(
                         'SiteTreeID',
-                        _t(__CLASS__ . '.PAGE', 'Page'),
+                        _t(self::class . '.PAGE', 'Page'),
                         SiteTree::class
                     )
                     ->setTitleField($sitetree_field_label),
                     TextField::create(
                         'Anchor',
-                        _t(__CLASS__ . '.ANCHOR', 'Anchor/Querystring')
+                        _t(self::class . '.ANCHOR', 'Anchor/Querystring')
                     )
-                    ->setDescription(_t(__CLASS__ . '.ANCHORINFO', 'Include # at the start of your anchor name or, ? at the start of your querystring'))
+                    ->setDescription(_t(self::class . '.ANCHORINFO', 'Include # at the start of your anchor name or, ? at the start of your querystring'))
                 )
                 ->displayIf('Type')->isEqualTo('SiteTree')->end()
             );
 
             // Display warning if the selected page is deleted or unpublished
             if ($owner->SiteTreeID && !$owner->SiteTree()->isPublished()) {
-                $sitetreeField->setDescription(_t(__CLASS__ . '.DELETEDWARNING', 'Warning: The selected page appears to have been deleted or unpublished. This link may not appear or may be broken in the frontend'));
+                $sitetreeField->setDescription(_t(self::class . '.DELETEDWARNING', 'Warning: The selected page appears to have been deleted or unpublished. This link may not appear or may be broken in the frontend'));
             }
         }
     }
 
     public function updateIsCurrent(&$status): void
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
             $owner->Type == 'SiteTree' &&
@@ -109,7 +107,7 @@ class LinkSiteTree extends Extension
 
     public function updateIsSection(&$status): void
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
             $owner->Type == 'SiteTree' &&
@@ -123,7 +121,7 @@ class LinkSiteTree extends Extension
 
     public function updateIsOrphaned(&$status): void
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
             $owner->Type == 'SiteTree' &&

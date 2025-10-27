@@ -115,6 +115,7 @@ class Phone extends ModelData
         }
     }
 
+    #[\Override]
     public function forTemplate(): string
     {
         return $this->Render();

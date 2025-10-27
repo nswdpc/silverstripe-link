@@ -11,31 +11,30 @@ use SilverStripe\Core\Convert;
  * Add sitetree type to link field
  *
  * @package silverstripe-link
+ * @property ?string $IDCustomValue
+ * @extends \SilverStripe\Core\Extension<static>
  */
 class DefineableMarkupID extends Extension
 {
     /**
      * Database fields
-     * @var array
      */
-    private static $db = [
+    private static array $db = [
         'IDCustomValue' => 'Text'
     ];
 
     /**
      * Update Fields
-     * @return FieldList
      */
-    public function updateCMSFields(FieldList $fields)
+    public function updateCMSFields(FieldList $fields): FieldList
     {
-        $owner = $this->owner;
         $fields->addFieldToTab(
             'Root.Main',
             TextField::create(
                 'IDCustomValue',
-                _t(__CLASS__ . '.ID', 'ID')
+                _t(self::class . '.ID', 'ID')
             )
-            ->setDescription(_t(__CLASS__ . '.IDCUSTOMVALUE', 'Define an ID for the link.  This is particularly useful for google tracking.'))
+            ->setDescription(_t(self::class . '.IDCUSTOMVALUE', 'Define an ID for the link.  This is particularly useful for google tracking.'))
         );
         return $fields;
     }
@@ -45,7 +44,7 @@ class DefineableMarkupID extends Extension
      */
     public function onBeforeWrite()
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         $owner->IDCustomValue = Convert::raw2url($owner->IDCustomValue);
     }
 
@@ -54,7 +53,7 @@ class DefineableMarkupID extends Extension
      */
     public function updateIDValue(&$id)
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if ($owner->IDCustomValue) {
             $id = $owner->IDCustomValue;
         }

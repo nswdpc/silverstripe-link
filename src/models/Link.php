@@ -29,12 +29,12 @@ use SilverStripe\Assets\Folder;
  * @package silverstripe-link
  *
  * @property string $Title
- * @property string $Type
- * @property string $URL
- * @property string $Email
- * @property string $Phone
+ * @property ?string $Type
+ * @property ?string $URL
+ * @property ?string $Email
+ * @property ?string $Phone
  * @property bool $OpenInNewWindow
- * @property string $SelectedStyle
+ * @property ?string $SelectedStyle
  * @property int $FileID
  * @method File File()
  * @mixin LinkSiteTree
@@ -43,15 +43,13 @@ class Link extends DataObject
 {
     /**
      * Defines the database table name
-     * @var string
      */
-    private static $table_name = 'Link';
+    private static string $table_name = 'Link';
 
     /**
      * Database fields
-     * @var array
      */
-    private static $db = [
+    private static array $db = [
         'Title' => 'Varchar',
         'Type' => 'Varchar(50)',
         'URL' => 'Text',
@@ -63,22 +61,20 @@ class Link extends DataObject
 
     /**
      * Has_one relationship
-     * @var array
      */
-    private static $has_one = [
+    private static array $has_one = [
         'File' => File::class
     ];
     
-    private static $owns = [
+    private static array $owns = [
        'File',   
     ];
 
     /**
      * Defines summary fields commonly used in table columns
      * as a quick overview of the data for this dataobject
-     * @var array
      */
-    private static $summary_fields = [
+    private static array $summary_fields = [
         'Title' => 'Title',
         'TypeLabel' => 'Type',
         'LinkURL' => 'Link'
@@ -86,9 +82,8 @@ class Link extends DataObject
 
     /**
      * Defines a default list of filters for the search context
-     * @var array
      */
-    private static $searchable_fields = [
+    private static array $searchable_fields = [
         'Title',
         'URL',
         'Email',
@@ -98,18 +93,14 @@ class Link extends DataObject
     /**
      * A map of styles that are available in the cms for
      * users to select from.
-     *
-     * @var array
      */
-    private static $styles = [];
+    private static array $styles = [];
 
     /**
      * A map of object types that can be linked to
      * Custom dataobjects can be added to this
-     *
-     * @var array
      */
-    private static $types = [
+    private static array $types = [
         'URL' => 'URL',
         'Email' => 'Email address',
         'Phone' => 'Phone number',
@@ -121,14 +112,13 @@ class Link extends DataObject
      *
      * @var array
      */
-    private static $allowed_types = null;
+    private static $allowed_types;
 
     /**
      * Ensures that the methods are wrapped in the correct type and
      * values are safely escaped while rendering in the template.
-     * @var array
      */
-    private static $casting = [
+    private static array $casting = [
         'ClassAttr' => 'HTMLFragment',
         'TargetAttr' => 'HTMLFragment',
         'IDAttr' => 'HTMLFragment'
@@ -136,40 +126,35 @@ class Link extends DataObject
 
     /**
      * @config
-     * @var string
      */
-    private static $linking_mode_default = 'link';
+    private static string $linking_mode_default = 'link';
 
     /**
      * @config
-     * @var string
      */
-    private static $linking_mode_current = 'current';
+    private static string $linking_mode_current = 'current';
 
     /**
      * @config
-     * @var string
      */
-    private static $linking_mode_section = 'section';
+    private static string $linking_mode_section = 'section';
 
     /**
      * If false, when Type is "File", folders in the TreeDropdownField will not be selectable.
      * @config
-     * @var boolean
      */
-    private static $link_to_folders = false;
+    private static bool $link_to_folders = false;
 
     /**
      * Provides a quick way to define additional methods for provideGraphQLScaffolding as Fields
      * @return Array
      */
-    private static $gql_fields = [];
+    private static array $gql_fields = [];
 
     /**
      * Provides a quick way to define additional methods for provideGraphQLScaffolding as Nested Queries
-     * @var Array
      */
-    private static $gql_nested_queries = [];
+    private static array $gql_nested_queries = [];
 
     /**
      * Custom CSS classes for template
@@ -186,6 +171,7 @@ class Link extends DataObject
      * CMS Fields
      * @return FieldList
      */
+    #[\Override]
     public function getCMSFields()
     {
         $fields = FieldList::create(
@@ -206,10 +192,10 @@ class Link extends DataObject
                 'Root.Settings',
                 DropdownField::create(
                     'SelectedStyle',
-                    _t(__CLASS__ . '.STYLE', 'Style'),
+                    _t(self::class . '.STYLE', 'Style'),
                     $styles
                 )
-                ->setEmptyString(_t(__CLASS__ . '.DEFAULT', 'Default')),
+                ->setEmptyString(_t(self::class . '.DEFAULT', 'Default')),
                 'Type'
             );
         }
@@ -227,27 +213,25 @@ class Link extends DataObject
     /**
      * CMS Main fields
      * This is so other modules can access these fields without other tabs etc.
-     *
-     * @return Array
      */
-    public function getCMSMainFields()
+    public function getCMSMainFields(): array
     {
         $fields = [
             TextField::create(
                 'Title',
-                _t(__CLASS__ . '.TITLE', 'Title')
+                _t(self::class . '.TITLE', 'Title')
             )
-            ->setDescription(_t(__CLASS__ . '.OPTIONALTITLE', 'Optional. Will be auto-generated from link if left blank.')),
+            ->setDescription(_t(self::class . '.OPTIONALTITLE', 'Optional. Will be auto-generated from link if left blank.')),
             OptionsetField::create(
                 'Type',
-                _t(__CLASS__ . '.LINKTYPE', 'Type'),
+                _t(self::class . '.LINKTYPE', 'Type'),
                 $this->i18nTypes
             )
             ->setValue('URL'),
             Wrapper::create(
                 $fileDropdown = TreeDropdownField::create(
                     'FileID',
-                    _t(__CLASS__ . '.FILE', 'File'),
+                    _t(self::class . '.FILE', 'File'),
                     File::class,
                     'ID',
                     'Title'
@@ -257,27 +241,27 @@ class Link extends DataObject
             Wrapper::create(
                 TextField::create(
                     'URL',
-                    _t(__CLASS__ . '.URL', 'URL')
+                    _t(self::class . '.URL', 'URL')
                 )
             )
             ->displayIf('Type')->isEqualTo('URL')->end(),
             Wrapper::create(
                 TextField::create(
                     'Email',
-                    _t(__CLASS__ . '.EMAILADDRESS', 'Email Address')
+                    _t(self::class . '.EMAILADDRESS', 'Email Address')
                 )
             )
             ->displayIf('Type')->isEqualTo('Email')->end(),
             Wrapper::create(
                 TextField::create(
                     'Phone',
-                    _t(__CLASS__ . '.PHONENUMBER', 'Phone Number')
+                    _t(self::class . '.PHONENUMBER', 'Phone Number')
                 )
             )
             ->displayIf('Type')->isEqualTo('Phone')->end(),
             CheckboxField::create(
                 'OpenInNewWindow',
-                _t(__CLASS__ . '.OPENINNEWWINDOW','Open link in a new window')
+                _t(self::class . '.OPENINNEWWINDOW','Open link in a new window')
             )
             ->displayIf('Type')->isEqualTo('URL')
             ->orIf()->isEqualTo('File')
@@ -286,9 +270,7 @@ class Link extends DataObject
 
         // Disable folders in dropdown if linking to folders is not allowed.
         if (!$this->config()->get('link_to_folders')) {
-            $fileDropdown->setDisableFunction(function ($item) {
-                return is_a($item, Folder::class);
-            });
+            $fileDropdown->setDisableFunction(fn($item): bool => is_a($item, Folder::class));
         }
 
         $this->extend('updateCMSMainFields', $fields);
@@ -299,6 +281,7 @@ class Link extends DataObject
     /**
      * Validate
      */
+    #[\Override]
     public function validate(): ValidationResult
     {
         $valid = true;
@@ -313,28 +296,31 @@ class Link extends DataObject
                 if ($this->{$type} == '') {
                     $valid = false;
                     $message = _t(
-                        __CLASS__ . '.VALIDATIONERROR_EMPTY'.strtoupper($type),
+                        self::class . '.VALIDATIONERROR_EMPTY'.strtoupper($type),
                         'You must enter a {TypeLabel}',
                         [
                             'TypeLabel' => $this->TypeLabel
                         ]
                     );
                 }
+
                 break;
             case 'File':
             case 'SiteTree':
                 if (empty($this->{$type.'ID'})) {
                     $valid = false;
                     $message = _t(
-                        __CLASS__ . '.VALIDATIONERROR_OBJECT',
+                        self::class . '.VALIDATIONERROR_OBJECT',
                         'Please select a {TypeLabel}',
                         [
                             'TypeLabel' => $this->TypeLabel
                         ]
                     );
                 }
+
                 break;
         }
+
         // if its already failed don't bother checking the rest
         if ($valid) {
             switch ($type) {
@@ -343,28 +329,31 @@ class Link extends DataObject
                     if (!in_array(substr($this->URL, 0, 1), $allowedFirst) && !filter_var($this->URL, FILTER_VALIDATE_URL)) {
                         $valid = false;
                         $message = _t(
-                            __CLASS__ . '.VALIDATIONERROR_VALIDURL',
+                            self::class . '.VALIDATIONERROR_VALIDURL',
                             'Please enter a valid URL.  Be sure to include http:// for an external URL. or begin your internal url/anchor with a "/" character'
                         );
                     }
+
                     break;
                 case 'Email':
                     if (!filter_var($this->Email, FILTER_VALIDATE_EMAIL)) {
                         $valid = false;
                         $message = _t(
-                            __CLASS__ . '.VALIDATIONERROR_VALIDEMAIL',
+                            self::class . '.VALIDATIONERROR_VALIDEMAIL',
                             'Please enter a valid Email address'
                         );
                     }
+
                     break;
                 case 'Phone':
                     if (!preg_match("/^\+?[0-9a-zA-Z\-\s]*[\,\#]?[0-9\-\s]*$/", $this->Phone)) {
                         $valid = false;
                         $message = _t(
-                            __CLASS__ . '.VALIDATIONERROR_VALIDPHONE',
+                            self::class . '.VALIDATIONERROR_VALIDPHONE',
                             'Please enter a valid Phone number'
                         );
                     }
+
                     break;
             }
         }
@@ -383,6 +372,7 @@ class Link extends DataObject
      * Event handler called before writing to the database.
      * If the title is empty, set a default based on the link.
      */
+    #[\Override]
     public function onBeforeWrite()
     {
         parent::onBeforeWrite();
@@ -401,6 +391,7 @@ class Link extends DataObject
                             $this->Title = $siteTree->MenuTitle;
                         }
                     }
+
                     break;
                 default:
                     if ($this->getRelationType($type) == 'has_one' && $component = $this->getComponent($type)) {
@@ -408,6 +399,7 @@ class Link extends DataObject
                     } else {
                         $this->Title = 'Link-' . $this->ID;
                     }
+
                     break;
             }
         }
@@ -415,14 +407,12 @@ class Link extends DataObject
 
     /**
      * Provides a quick way to define additional methods to provideGraphQLScaffolding as Fields
-     * @return Array
      */
-    public function gqlFields()
+    public function gqlFields(): array
     {
         $fields = $this->config()->get('gql_fields');
         $this->extend('updateGqlFields', $fields);
-        $fields = array_merge(['LinkURL'], $fields);
-        return $fields;
+        return array_merge(['LinkURL'], $fields);
     }
 
     /**
@@ -439,14 +429,14 @@ class Link extends DataObject
     /**
      * Set CSS classes for templates
      * @param string $class CSS classes.
-     * @return Link
      */
-    public function addExtraClass($class)
+    public function addExtraClass($class): static
     {
         $classes = ($class) ? explode(' ', $class) : [];
-        foreach ($classes as $key => $value) {
+        foreach ($classes as $value) {
             $this->classes[$value] = $value;
         }
+
         return $this;
     }
 
@@ -463,9 +453,8 @@ class Link extends DataObject
     /**
      * Set style used for
      * @param string $style
-     * @return Link
      */
-    public function setStyle($style)
+    public function setStyle($style): static
     {
         $this->template_style = $style;
         return $this;
@@ -476,16 +465,15 @@ class Link extends DataObject
      */
     public function getStyle(): ?string
     {
-        return $this->SelectedStyle ? $this->SelectedStyle : $this->template_style;
+        return $this->SelectedStyle ?: $this->template_style;
     }
 
     /**
      * Sets allowed link types
      *
      * @param array $types Allowed type names
-     * @return Link
      */
-    public function setAllowedTypes($types = [])
+    public function setAllowedTypes($types = []): static
     {
         $this->allowed_types = $types;
         return $this;
@@ -504,6 +492,7 @@ class Link extends DataObject
             // Prioritise local field over global settings
             $allowed_types = $this->allowed_types;
         }
+
         if ($allowed_types) {
            foreach ($allowed_types as $type) {
                 if (!array_key_exists($type, $types)) {
@@ -511,25 +500,26 @@ class Link extends DataObject
                 }
             }
 
-            foreach (array_diff_key($types, array_flip($allowed_types)) as $key => $value) {
+            foreach (array_keys(array_diff_key($types, array_flip($allowed_types))) as $key) {
                 unset($types[$key]);
             }
         }
+
         $this->extend('updateTypes', $types);
         return $types;
     }
 
     /**
      * Returns allowed link types with translations
-     * @return array
      */
-    public function geti18nTypes()
+    public function geti18nTypes(): array
     {
         $i18nTypes = [];
         // Get translatable labels
         foreach ($this->Types as $key => $label) {
-            $i18nTypes[$key] = _t(__CLASS__ . '.TYPE'.strtoupper($key), $label);
+            $i18nTypes[$key] = _t(self::class . '.TYPE'.strtoupper($key), $label);
         }
+
         $this->extend('updatei18nTypes', $i18nTypes);
         return $i18nTypes;
     }
@@ -547,14 +537,14 @@ class Link extends DataObject
 
     /**
      * Returns available styles with translations
-     * @return array
      */
-    public function geti18nStyles()
+    public function geti18nStyles(): array
     {
         $i18nStyles = [];
         foreach ($this->styles as $key => $label) {
-            $i18nStyles[$key] = _t(__CLASS__ . '.STYLE' . strtoupper($key), $label);
+            $i18nStyles[$key] = _t(self::class . '.STYLE' . strtoupper($key), $label);
         }
+
         $this->extend('updatei18nStyles', $i18nStyles);
         return $i18nStyles;
     }
@@ -567,6 +557,7 @@ class Link extends DataObject
         if (!$this->ID) {
             return null;
         }
+
         $type = $this->Type;
         switch ($type) {
             case 'URL':
@@ -584,11 +575,12 @@ class Link extends DataObject
                     if (!$component->exists()) {
                         $LinkURL = null;
                     }
+
                     if ($component->hasMethod('Link')) {
                         $LinkURL = $component->Link() . $this->Anchor;
                     } else {
                         $LinkURL = _t(
-                            __CLASS__ . '.LINKMETHODMISSING',
+                            self::class . '.LINKMETHODMISSING',
                             'Please implement a Link() method on your dataobject "{type}"',
                             [
                                 'type' => $type
@@ -596,6 +588,7 @@ class Link extends DataObject
                         );
                     }
                 }
+
                 break;
             default:
                 $LinkURL = null;
@@ -613,15 +606,16 @@ class Link extends DataObject
     {
         if ($this->SelectedStyle) {
             $this->setClass($this->SelectedStyle);
-        } else if ($this->template_style) {
+        } elseif ($this->template_style) {
             $this->setClass($this->template_style);
         }
 
         $classes = $this->classes;
         $this->extend('updateClasses', $classes);
-        if (count($classes)) {
+        if ($classes !== []) {
             return implode(' ', $classes);
         }
+
         return '';
     }
 
@@ -641,7 +635,7 @@ class Link extends DataObject
     /**
      * Returns the html target attribute
      */
-    public function getTarget()
+    public function getTarget(): string
     {
         return $this->OpenInNewWindow ? "_blank" : '';
     }
@@ -686,6 +680,7 @@ class Link extends DataObject
         if (class_exists(SiteTree::class) && class_exists(ContentController::class) && ($currentPage instanceof ContentController)) {
             $currentPage = $currentPage->data();
         }
+
         return $currentPage;
     }
 
@@ -786,15 +781,14 @@ class Link extends DataObject
     public function getTypeLabel()
     {
         $types = $this->config()->get('types');
-        return isset($types[$this->Type]) ? _t(__CLASS__ . '.TYPE' . strtoupper($this->Type), $types[$this->Type]) : null;
+        return isset($types[$this->Type]) ? _t(self::class . '.TYPE' . strtoupper($this->Type), $types[$this->Type]) : null;
     }
 
     /**
      * Returns the base class without namespacing
      * @param  string $class
-     * @return string
      */
-    public function baseClassName($class)
+    public function baseClassName($class): string
     {
         $class = explode('\\', $class);
         return array_pop($class);
@@ -803,12 +797,14 @@ class Link extends DataObject
     /**
      * Renders an HTML anchor attribute for this link
      */
+    #[\Override]
     public function forTemplate(): string
     {
         $link = '';
         if ($this->LinkURL) {
             $link = $this->renderWith($this->RenderTemplates);
         }
+
         $this->extend('updateTemplate', $link);
         return $link;
     }
@@ -816,23 +812,22 @@ class Link extends DataObject
     /**
      * Renders an HTML anchor tag for this link
      * This is an alias to {@link forTemplate()}
-     *
-     * @return string
      */
-    public function getLayout()
+    public function getLayout(): string
     {
         return $this->forTemplate();
     }
 
     /**
      * Returns a list of rendering templates
-     * @return array
      */
-    public function getRenderTemplates()
+    public function getRenderTemplates(): array
     {
         $ClassName = $this->ClassName;
 
-        if (is_object($ClassName)) $ClassName = get_class($ClassName);
+        if (is_object($ClassName)) {
+            $ClassName = $ClassName::class;
+        }
 
         if (!is_subclass_of($ClassName, DataObject::class)) {
             throw new InvalidArgumentException($ClassName . ' is not a subclass of DataObject');
@@ -846,12 +841,15 @@ class Link extends DataObject
             if ($this->Style) {
                 $templates[] = $baseClassName . '_' . $this->style;
             }
+
             $templates[] = $baseClassName;
             if ($next == DataObject::class) {
                 return $templates;
             }
+
             $ClassName = $next;
         }
+
         return [];
     }
 
@@ -859,6 +857,7 @@ class Link extends DataObject
      * @param \SilverStripe\Security\Member|null $member
      * @return bool
      */
+    #[\Override]
     public function canView($member = null)
     {
         return true;
@@ -868,6 +867,7 @@ class Link extends DataObject
      * @param \SilverStripe\Security\Member|null $member
      * @return bool
      */
+    #[\Override]
     public function canEdit($member = null)
     {
         return true;
@@ -877,6 +877,7 @@ class Link extends DataObject
      * @param \SilverStripe\Security\Member|null $member
      * @return bool
      */
+    #[\Override]
     public function canDelete($member = null)
     {
         return true;
@@ -887,6 +888,7 @@ class Link extends DataObject
      * @param array $context
      * @return bool
      */
+    #[\Override]
     public function canCreate($member = null, $context = [])
     {
         return true;
