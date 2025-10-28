@@ -26,7 +26,8 @@
       "nswdpc/ci-files": "dev-v-4",
       "phpstan/phpstan": "^2",
       "phpunit/phpunit": "^11.5",
-      "rector/rector": "^2"
+      "rector/rector": "^2",
+      "phpstan/phpstan-phpunit": "^2"
   },
   "extra": {
     "installer-name": "link"
