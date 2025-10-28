@@ -4,7 +4,7 @@ namespace gorriecoe\Link\Tests;
 
 use gorriecoe\Link\Models\Link;
 use SilverStripe\Assets\File;
-use Silverstripe\Assets\Dev\TestAssetStore;
+use SilverStripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Dev\SapphireTest;
 
 class FileLinkTest extends SapphireTest
@@ -28,7 +28,7 @@ class FileLinkTest extends SapphireTest
         ]);
         $file->setFromString(str_repeat('x', 1000000), $file->getFilename());
         $file->write();
-        $file->publishSingle();
+        $file->publishFile();
         $fileLink = $file->Link();
         $this->assertNotEmpty($fileLink);
 

@@ -24,6 +24,12 @@ class SiteTreeLinkTest extends SapphireTest
     public function testLink(): void
     {
 
+        if (!class_exists(SiteTree::class)) {
+            $this->markTestSkipped(
+                'The silverstripe/cms module is required to run this test.'
+            );
+        }
+
         $siteTree = SiteTree::create([
             'Title' => 'Test page',
             'URLSegment' => 'test-page',

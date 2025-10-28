@@ -623,6 +623,7 @@ class Link extends DataObject
      */
     public function ClassAttr(): DBHTMLText
     {
+        // @phpstan-ignore return.type
         return DBField::create_field('HTMLFragment', $this->getClassAttr());
     }
 
@@ -655,6 +656,7 @@ class Link extends DataObject
      */
     public function TargetAttr(): DBHTMLText
     {
+        // @phpstan-ignore return.type
         return DBField::create_field('HTMLFragment', $this->getTargetAttr());
     }
 
@@ -694,6 +696,7 @@ class Link extends DataObject
      */
     public function IDAttr(): DBHTMLText
     {
+        // @phpstan-ignore return.type
         return DBField::create_field('HTMLFragment', $this->getIDAttr());
     }
 
