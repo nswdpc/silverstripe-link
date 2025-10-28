@@ -570,6 +570,14 @@ class Link extends DataObject
     }
 
     /**
+     * Returns value for the template variable $LinkURL
+     */
+    public function LinkURL(): string
+    {
+        return $this->getLinkURL();
+    }
+
+    /**
      * Returns the css classes
      */
     public function getClass(): string
@@ -587,6 +595,14 @@ class Link extends DataObject
         }
 
         return '';
+    }
+
+    /**
+     * Returns the html class attribute value for the template variable $Class
+     */
+    public function Class(): string
+    {
+        return $this->getClass();
     }
 
     /**
@@ -619,6 +635,14 @@ class Link extends DataObject
     }
 
     /**
+     * Returns the html target attribute value for the template variable $Target
+     */
+    public function Target(): string
+    {
+        return $this->getTarget();
+    }
+
+    /**
      * Returns the html target attribute
      */
     public function getTargetAttr(): string
@@ -642,6 +666,14 @@ class Link extends DataObject
         $id = '';
         $this->extend('updateIDValue', $id);
         return $id;
+    }
+
+    /**
+     * Returns the html id attribute value for the template variable $IDValue
+     */
+    public function IDValue(): ?string
+    {
+        return $this->getIDValue();
     }
 
     /**
