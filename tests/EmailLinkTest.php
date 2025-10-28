@@ -7,7 +7,6 @@ use SilverStripe\Dev\SapphireTest;
 
 class EmailLinkTest extends SapphireTest
 {
-
     protected $usesDatabase = true;
 
     public function testLinkWithNoAttributes(): void

@@ -8,7 +8,6 @@ use SilverStripe\Dev\SapphireTest;
 
 class SiteTreeLinkTest extends SapphireTest
 {
-
     protected $usesDatabase = true;
 
     protected function setUp(): void

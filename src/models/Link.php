@@ -512,7 +512,7 @@ class Link extends DataObject
     public function getFormattedPhoneLink(): string
     {
         $phone = $this->obj('Phone')->PhoneFriendly();
-        if($phone instanceof Phone) {
+        if ($phone instanceof Phone) {
             return $phone->RFC3966()->forTemplate();
         } else {
             return '';

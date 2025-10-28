@@ -8,7 +8,6 @@ use SilverStripe\Dev\SapphireTest;
 
 class PhoneLinkTest extends SapphireTest
 {
-
     protected $usesDatabase = true;
 
     public function testLinkWithNoAttributes(): void

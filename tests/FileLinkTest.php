@@ -9,7 +9,6 @@ use SilverStripe\Dev\SapphireTest;
 
 class FileLinkTest extends SapphireTest
 {
-
     protected $usesDatabase = true;
 
     protected function setUp(): void
