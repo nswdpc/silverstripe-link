@@ -827,7 +827,7 @@ class Link extends DataObject
     public function forTemplate(): string
     {
         $link = '';
-        if ($this->LinkURL) {
+        if ($this->getLinkURL()) {
             $link = $this->renderWith($this->getRenderTemplates());
         }
 
