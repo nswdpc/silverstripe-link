@@ -10,6 +10,7 @@ class SiteTreeLinkTest extends SapphireTest
 {
     protected $usesDatabase = true;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,11 +37,12 @@ class SiteTreeLinkTest extends SapphireTest
         ]);
         $siteTree->write();
         $siteTree->publishSingle();
+
         $siteTreeLink = $siteTree->Link();
         $this->assertNotEmpty($siteTreeLink);
 
         $link = Link::create([
-            'Title' => "Visit \"> page",
+            'Title' => 'Visit "> page',
             'Type' => 'SiteTree',
             'SiteTreeID' => $siteTree->ID,
             'OpenInNewWindow' => false

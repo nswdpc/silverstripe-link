@@ -11,6 +11,7 @@ class FileLinkTest extends SapphireTest
 {
     protected $usesDatabase = true;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,11 +29,12 @@ class FileLinkTest extends SapphireTest
         $file->setFromString(str_repeat('x', 1000000), $file->getFilename());
         $file->write();
         $file->publishFile();
+
         $fileLink = $file->Link();
         $this->assertNotEmpty($fileLink);
 
         $link = Link::create([
-            'Title' => "Download \"> file",
+            'Title' => 'Download "> file',
             'Type' => 'File',
             'FileID' => $file->ID,
             'OpenInNewWindow' => false

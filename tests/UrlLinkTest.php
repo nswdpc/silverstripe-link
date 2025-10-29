@@ -12,7 +12,7 @@ class UrlLinkTest extends SapphireTest
     public function testLinkWithNoAttributes(): void
     {
         $link = Link::create([
-            'Title' => "Example \"> link",
+            'Title' => 'Example "> link',
             'Type' => 'URL',
             'URL' => 'https://example.com',
             'OpenInNewWindow' => false
@@ -69,7 +69,7 @@ class UrlLinkTest extends SapphireTest
             'OpenInNewWindow' => false
         ]);
         $link->write();
-        $link->setClass("\"><strong>strong</strong><a");
+        $link->setClass('"><strong>strong</strong><a');
 
         $this->assertEquals(
             '<a class="&quot;&gt;&lt;strong&gt;strong&lt;/strong&gt;&lt;a" href="https://example.com">https://example.com</a>',

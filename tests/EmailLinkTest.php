@@ -12,7 +12,7 @@ class EmailLinkTest extends SapphireTest
     public function testLinkWithNoAttributes(): void
     {
         $link = Link::create([
-            'Title' => "Email \"> me",
+            'Title' => 'Email "> me',
             'Type' => 'Email',
             'Email' => 'test@example.com',
             'OpenInNewWindow' => false
@@ -69,7 +69,7 @@ class EmailLinkTest extends SapphireTest
             'OpenInNewWindow' => false
         ]);
         $link->write();
-        $link->setClass("\"><strong>strong</strong><a");
+        $link->setClass('"><strong>strong</strong><a');
 
         $this->assertEquals(
             '<a class="&quot;&gt;&lt;strong&gt;strong&lt;/strong&gt;&lt;a" href="mailto:test@example.com">test@example.com</a>',

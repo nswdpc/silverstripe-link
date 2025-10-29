@@ -13,7 +13,7 @@ class PhoneLinkTest extends SapphireTest
     public function testLinkWithNoAttributes(): void
     {
         $link = Link::create([
-            'Title' => "Phone \"> me",
+            'Title' => 'Phone "> me',
             'Type' => 'Phone',
             'Phone' => '+6480074992488',
             'OpenInNewWindow' => false
@@ -70,7 +70,7 @@ class PhoneLinkTest extends SapphireTest
             'OpenInNewWindow' => false
         ]);
         $link->write();
-        $link->setClass("\"><strong>strong</strong><a");
+        $link->setClass('"><strong>strong</strong><a');
 
         $this->assertEquals(
             '<a class="&quot;&gt;&lt;strong&gt;strong&lt;/strong&gt;&lt;a" href="tel:+64-80074992488">+6480074992488</a>',
