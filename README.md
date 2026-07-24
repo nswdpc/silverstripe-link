@@ -13,7 +13,7 @@ Adds a Link Object that can be link to a URL, Email, Phone number, an internal P
 Composer is the recommended way of installing SilverStripe modules.
 
 ```sh
-composer require gorriecoe/silverstripe-link
+composer require nswdpc/silverstripe-link
 ```
 
 ## Documentation

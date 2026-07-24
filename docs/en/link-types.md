@@ -1,7 +1,3 @@
----
-title: Link types
----
-
 Link has few types built in.  URL, Email, Phone number, an internal Page or File.
 
 ## Default link types

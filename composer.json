@@ -1,5 +1,8 @@
 {
-  "name": "gorriecoe/silverstripe-link",
+  "name": "nswdpc/silverstripe-link",
+  "replace": {
+      "gorriecoe/silverstripe-link": "self.version"
+  },
   "description": "Adds a Link Object that can be link to a URL, Email, Phone number, an internal Page or File.",
   "type": "silverstripe-vendormodule",
   "license": "BSD-3-Clause",
@@ -13,7 +16,6 @@
     "silverstripe",
     "link"
   ],
-  "homepage": "https://gorriecoe.github.io/silverstripe-link/en/",
   "require": {
     "silverstripe/framework": "^6",
     "unclecheese/display-logic": "^4",

@@ -1,7 +1,3 @@
----
-title: Html ID attribute
----
-
 ## Add html id attribute
 
 Link has 3 options for defining html id, automatic, define-able or both.
