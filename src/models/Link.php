@@ -307,7 +307,7 @@ class Link extends DataObject
             switch ($type) {
                 case 'URL':
                     $allowedFirst = ['#', '/'];
-                    if (!in_array(substr((string) $this->URL, 0, 1), $allowedFirst) && !filter_var($this->URL, FILTER_VALIDATE_URL)) {
+                    if (!in_array(substr((string) $this->URL, 0, 1), $allowedFirst, true) && !filter_var($this->URL, FILTER_VALIDATE_URL)) {
                         $valid = false;
                         $message = _t(
                             self::class . '.VALIDATIONERROR_VALIDURL',
