@@ -4,13 +4,14 @@ namespace gorriecoe\Link\Extensions;
 
 use gorriecoe\Link\Models\Link;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Core\Extension;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
 
-if(!class_exists(SiteTree::class)) {
+if (!class_exists(SiteTree::class)) {
     return;
 }
 
@@ -20,22 +21,23 @@ if(!class_exists(SiteTree::class)) {
  * @package silverstripe-link
  *
  * @property int $SiteTreeID
+ * @property ?string $Anchor
+ * @method mixed SiteTree()
+ * @extends \SilverStripe\Core\Extension<static>
  */
 class LinkSiteTree extends Extension
 {
     /**
      * Database fields
-     * @var array
      */
-    private static $db = [
+    private static array $db = [
         'Anchor' => 'Varchar(255)',
     ];
 
     /**
      * Has_one relationship
-     * @var array
      */
-    private static $has_one = [
+    private static array $has_one = [
         // @phpstan-ignore class.notFound
         'SiteTree' => SiteTree::class,
     ];
@@ -43,29 +45,26 @@ class LinkSiteTree extends Extension
     /**
      * A map of object types that can be linked to
      * Custom dataobjects can be added to this
-     *
-     * @var array
      **/
-    private static $types = [
+    private static array $types = [
         'SiteTree' => 'Page on this website',
     ];
 
     /**
      * Defines the label used in the sitetree dropdown.
-     * @param String $sitetree_field_label
+     * @param string $sitetree_field_label
      */
-    private static $sitetree_field_label = 'MenuTitle';
+    private static string $sitetree_field_label = 'MenuTitle';
 
     /**
      * Update Fields
-     * @param FieldList $fields
      */
     public function updateCMSFields(FieldList $fields)
     {
-        if(class_exists(SiteTree::class)) {
-            $owner = $this->owner;
-            $config = $owner->config();
-            $sitetree_field_label = $config->get('sitetree_field_label') ? : 'MenuTitle';
+        $owner = $this->getOwner();
+        if (class_exists(SiteTree::class) && ($owner instanceof Link)) {
+
+            $sitetree_field_label = Config::inst()->get($owner::class, 'sitetree_field_label') ?: 'MenuTitle';
 
             // Insert site tree field after the file selection field
             $fields->insertAfter(
@@ -73,71 +72,75 @@ class LinkSiteTree extends Extension
                 Wrapper::create(
                     $sitetreeField = TreeDropdownField::create(
                         'SiteTreeID',
-                        _t(__CLASS__ . '.PAGE', 'Page'),
+                        _t(self::class . '.PAGE', 'Page'),
                         SiteTree::class
                     )
                     ->setTitleField($sitetree_field_label),
                     TextField::create(
                         'Anchor',
-                        _t(__CLASS__ . '.ANCHOR', 'Anchor/Querystring')
+                        _t(self::class . '.ANCHOR', 'Anchor/Querystring')
                     )
-                    ->setDescription(_t(__CLASS__ . '.ANCHORINFO', 'Include # at the start of your anchor name or, ? at the start of your querystring'))
+                    ->setDescription(_t(self::class . '.ANCHORINFO', 'Include # at the start of your anchor name or, ? at the start of your querystring'))
                 )
                 ->displayIf('Type')->isEqualTo('SiteTree')->end()
             );
 
             // Display warning if the selected page is deleted or unpublished
-            if ($owner->SiteTreeID && !$owner->SiteTree()->isPublished()) {
-                $sitetreeField->setDescription(_t(__CLASS__ . '.DELETEDWARNING', 'Warning: The selected page appears to have been deleted or unpublished. This link may not appear or may be broken in the frontend'));
+            $siteTree = $owner->SiteTree();
+            if ($siteTree->isInDB() && !$siteTree->isPublished()) {
+                $sitetreeField->setDescription(_t(self::class . '.DELETEDWARNING', 'Warning: The selected page appears to have been deleted or unpublished. This link may not appear or may be broken in the frontend'));
             }
         }
     }
 
     public function updateIsCurrent(&$status): void
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
-            $owner->Type == 'SiteTree' &&
-            isset($owner->SiteTreeID) &&
-            ($owner->CurrentPage instanceof SiteTree)
+            ($owner instanceof Link) &&
+            $owner->Type == 'SiteTree'
         ) {
-            $currentPage = $owner->CurrentPage;
-            $status = $currentPage === $owner->SiteTree() || $currentPage->ID === $owner->SiteTreeID;
+            $currentPage = $owner->getCurrentPage();
+            if ($currentPage instanceof SiteTree) {
+                $status = $currentPage === $owner->SiteTree() || $currentPage->ID === $owner->SiteTreeID;
+            }
         }
     }
 
     public function updateIsSection(&$status): void
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
-            $owner->Type == 'SiteTree' &&
-            isset($owner->SiteTreeID) &&
-            ($owner->CurrentPage instanceof SiteTree)
+            ($owner instanceof Link) &&
+            $owner->Type == 'SiteTree'
         ) {
-            $currentPage = $owner->CurrentPage;
-            $status = $owner->isCurrent() || in_array($owner->SiteTreeID, $currentPage->getAncestors()->column());
+            $currentPage = $owner->getCurrentPage();
+            if ($currentPage instanceof SiteTree) {
+                $status = $owner->isCurrent() || in_array($owner->SiteTreeID, $currentPage->getAncestors()->column());
+            }
         }
     }
 
     public function updateIsOrphaned(&$status): void
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         if (
             class_exists(SiteTree::class) &&
-            $owner->Type == 'SiteTree' &&
-            isset($owner->SiteTreeID) &&
-            ($owner->CurrentPage instanceof SiteTree)
+            ($owner instanceof Link) &&
+            $owner->Type == 'SiteTree'
         ) {
-            $currentPage = $owner->CurrentPage;
-            // Always false for root pages
-            if (empty($owner->SiteTree()->ParentID)) {
-                $status = false;
-            } else {
-                // Parent must exist and not be an orphan itself
-                $parent = $owner->Parent();
-                $status = !$parent || !$parent->exists() || $parent->isOrphaned();
+            $currentPage = $owner->getCurrentPage();
+            if ($currentPage instanceof SiteTree) {
+                // Always false for root pages
+                if (empty($owner->SiteTree()->ParentID)) {
+                    $status = false;
+                } else {
+                    // Parent must exist and not be an orphan itself
+                    $parent = $owner->Parent();
+                    $status = !$parent || !$parent->exists() || $parent->isOrphaned();
+                }
             }
         }
     }

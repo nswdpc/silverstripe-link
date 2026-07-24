@@ -1,13 +1,9 @@
----
-title: Usage
----
-
 ## Has one example
 
-For the example below you will need to install [linkfield](https://github.com/gorriecoe/silverstripe-linkfield)
+For the example below you will need to install [linkfield](https://github.com/nswdpc/silverstripe-linkfield).
 
 ```sh
-composer require gorriecoe/silverstripe-linkfield
+composer require nswdpc/silverstripe-linkfield
 ```
 
 ```php
@@ -46,10 +42,10 @@ class MyClass extends DataObject
 
 ## Many many example
 
-For the example below you will need to install [linkfield](https://github.com/gorriecoe/silverstripe-linkfield)
+For the example below you will need to install [linkfield](https://github.com/nswdpc/silverstripe-linkfield)
 
 ```sh
-composer require gorriecoe/silverstripe-linkfield
+composer require nswdpc/silverstripe-linkfield
 ```
 
 ```php
@@ -97,10 +93,10 @@ class MyClass extends DataObject
 
 Although it is possible to add a has many relationship it is *NOT* recommmended.
 
-For the example below you will need to install [linkfield](https://github.com/gorriecoe/silverstripe-linkfield)
+For the example below you will need to install [linkfield](https://github.com/nswdpc/silverstripe-linkfield)
 
 ```sh
-composer require gorriecoe/silverstripe-linkfield
+composer require nswdpc/silverstripe-linkfield
 ```
 
 ```php

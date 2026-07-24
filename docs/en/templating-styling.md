@@ -1,7 +1,3 @@
----
-title: Templating and styling
----
-
 ## Basic usage
 
 ```html
@@ -76,8 +72,6 @@ Returns the html id attribute. `id='my-custom-id'` or `null`
 
 Returns the html id value.
 
-Refer to [Add html id attribute](https://github.com/gorriecoe/silverstripe-link#add-html-id-attribute) for more information
-
 ### $ClassAttr
 
 Returns the html class attribute. `class='my-custom-id'` or `null`
@@ -86,12 +80,10 @@ Returns the html class attribute. `class='my-custom-id'` or `null`
 
 Returns the html class value.
 
-Refer to [CMS Selectable Style](https://github.com/gorriecoe/silverstripe-link#cms-selectable-style) for more information
-
 ### Linking Modes
 
 Linking mode variables are also available any sitetree link.
-Refer to [Linking Modes](https://docs.silverstripe.org/en/4/developer_guides/templates/common_variables/#linking-modes) for more information
+Refer to [Linking Modes](https://docs.silverstripe.org/en/6/developer_guides/templates/common_variables/#linking-modes) for more information
 
 ## Define a custom style via the template
 

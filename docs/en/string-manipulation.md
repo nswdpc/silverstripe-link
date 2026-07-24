@@ -1,7 +1,3 @@
----
-title: String manipulation
----
-
 ## String template manipulation
 
 Link has a few methods to help manipulate DBString's.

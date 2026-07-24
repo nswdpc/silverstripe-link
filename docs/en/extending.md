@@ -1,12 +1,9 @@
----
-title: Extending
----
-
 ## Adding custom link types
 
 Sometimes you might have custom DataObject types that you would like CMS users to be able to create Links to. This can be achieved by adding a DataExtension to the Link DataObject, see the below example for making Product objects Linkable.
 
 ```php
+<?php
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DropdownField;
@@ -64,13 +61,3 @@ gorriecoe\Link\Models\Link:
   extensions:
     - CustomLinkExtension
 ```
-
-## Working examples
-
-The following modules enhance link but can also be used as working examples for what is possible.
-
--   [Add security link types](https://github.com/gorriecoe/silverstripe-securitylinks)
--   [Add directions link type](https://github.com/gorriecoe/silverstripe-directionslink)
--   [Add additional email options to email type](https://github.com/gorriecoe/silverstripe-advancedemaillinks)
--   [Add an icon to link output](https://github.com/gorriecoe/silverstripe-linkicon)
--   [Add preset link types from your config yml](https://github.com/gorriecoe/silverstripe-ymlpresetlinks)

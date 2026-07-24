@@ -1,27 +1,24 @@
 # Note
 
-This is a fork of `gorriecoe/silverstripe-link`. Use at your own risk.
+This is a fork of [`gorriecoe/silverstripe-link`](https://packagist.org/packages/gorriecoe/silverstripe-link).
+
+The intent of this fork is to provide a migration path to silverstripe/link.
 
 # Silverstripe link
 
 Adds a Link Object that can be link to a URL, Email, Phone number, an internal Page or File.
-
-## Why is this redirected from gorriecoe/link?
-
-The original maintainer of this repository has passed away. No changes are required and your module will continue to work as intended. Please see [this issue](https://github.com/elliot-sawyer/silverstripe-link/issues/31) for more info.
-
 
 ## Installation
 
 Composer is the recommended way of installing SilverStripe modules.
 
 ```sh
-composer require gorriecoe/silverstripe-link
+composer require nswdpc/silverstripe-link
 ```
 
 ## Documentation
 
-Check out [documentation](https://gorriecoe.github.io/silverstripe-link/en)
+Check out [documentation](./docs/index.md)
 
 ## Maintainers
 

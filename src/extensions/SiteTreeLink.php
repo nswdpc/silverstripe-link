@@ -3,12 +3,15 @@
 namespace gorriecoe\Link\Extensions;
 
 use gorriecoe\Link\Models\Link;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extension;
 
 /**
  * Fixes duplicate link in SiteTree
  *
  * @package silverstripe-link
+ * @extends \SilverStripe\Core\Extension<static>
  */
 class SiteTreeLink extends Extension
 {
@@ -17,9 +20,9 @@ class SiteTreeLink extends Extension
      */
     public function onBeforeDuplicate()
     {
-        $owner = $this->owner;
+        $owner = $this->getOwner();
         //loop through has_one relationships and reset any Link fields
-        if($hasOne = $owner->Config()->get('has_one')){
+        if (class_exists(SiteTree::class) && ($owner instanceof SiteTree) && ($hasOne = Config::inst()->get($owner::class, 'has_one'))) {
             foreach ($hasOne as $field => $fieldType) {
                 if ($fieldType === Link::class) {
                     $owner->{$field.'ID'} = 0;

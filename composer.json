@@ -1,5 +1,8 @@
 {
-  "name": "gorriecoe/silverstripe-link",
+  "name": "nswdpc/silverstripe-link",
+  "replace": {
+      "gorriecoe/silverstripe-link": "self.version"
+  },
   "description": "Adds a Link Object that can be link to a URL, Email, Phone number, an internal Page or File.",
   "type": "silverstripe-vendormodule",
   "license": "BSD-3-Clause",
@@ -13,7 +16,6 @@
     "silverstripe",
     "link"
   ],
-  "homepage": "https://gorriecoe.github.io/silverstripe-link/en/",
   "require": {
     "silverstripe/framework": "^6",
     "unclecheese/display-logic": "^4",
@@ -26,7 +28,8 @@
       "nswdpc/ci-files": "dev-v-4",
       "phpstan/phpstan": "^2",
       "phpunit/phpunit": "^11.5",
-      "rector/rector": "^2"
+      "rector/rector": "^2",
+      "phpstan/phpstan-phpunit": "^2"
   },
   "extra": {
     "installer-name": "link"
@@ -34,7 +37,9 @@
   "config": {
     "allow-plugins": {
       "composer/installers": true,
-      "silverstripe/vendor-plugin": true
+      "silverstripe/vendor-plugin": true,
+      "silverstripe/recipe-plugin": true,
+      "phpstan/extension-installer": true
     }
   },
   "scripts": {

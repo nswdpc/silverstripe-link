@@ -10,6 +10,7 @@ use gorriecoe\Link\View\Phone;
  * Adds methods to DBString to help manipulate the output suitable for links
  *
  * @package silverstripe-link
+ * @extends \SilverStripe\Core\Extension<(\SilverStripe\ORM\FieldType\DBString & static)>
  */
 class DBStringLink extends Extension
 {
@@ -18,7 +19,7 @@ class DBStringLink extends Extension
      */
     public function LinkFriendly(): string
     {
-        return Convert::raw2url($this->owner->value);
+        return Convert::raw2url($this->getOwner()->value ?? '');
     }
 
     /**
@@ -32,13 +33,13 @@ class DBStringLink extends Extension
     /**
      * Provides string replace to allow phone number friendly urls
      */
-    public function PhoneFriendly(): string
+    public function PhoneFriendly(): ?Phone
     {
-        $value = $this->owner->value;
+        $value = $this->getOwner()->value;
         if ($value) {
             return Phone::create($value);
         } else {
-            return '';
+            return null;
         }
     }
 }

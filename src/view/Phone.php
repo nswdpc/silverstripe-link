@@ -4,7 +4,6 @@ namespace gorriecoe\Link\View;
 
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
-use libphonenumber\PhoneNumber;
 use SilverStripe\Model\ModelData;
 
 /**
@@ -12,7 +11,6 @@ use SilverStripe\Model\ModelData;
  */
 class Phone extends ModelData
 {
-    
     protected \libphonenumber\PhoneNumberUtil $library;
 
     protected \libphonenumber\PhoneNumber $instance;
@@ -22,7 +20,7 @@ class Phone extends ModelData
     /**
      * The country the user is dialing from.
      */
-    protected string $fromCountry;
+    protected string $fromCountry = '';
 
     private static string $default_country = 'NZ';
 
@@ -115,6 +113,7 @@ class Phone extends ModelData
         }
     }
 
+    #[\Override]
     public function forTemplate(): string
     {
         return $this->Render();
