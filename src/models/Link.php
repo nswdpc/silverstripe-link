@@ -572,7 +572,7 @@ class Link extends DataObject
     /**
      * Returns value for the template variable $LinkURL
      */
-    public function LinkURL(): string
+    public function LinkURL(): ?string
     {
         return $this->getLinkURL();
     }
